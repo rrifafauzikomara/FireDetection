@@ -1,0 +1,64 @@
+apply plugin: 'com.android.application'
+
+project.ext.ASSET_DIR = projectDir.toString() + '/src/main/assets'
+
+assert file(project.ext.ASSET_DIR + "/optimized_graph.lite").exists()
+assert file(project.ext.ASSET_DIR + "/retrained_labels.txt").exists()
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "id.rifafauzi6.android_cnn"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    //new
+    lintOptions {
+        abortOnError false
+    }
+
+    aaptOptions {
+        noCompress "tflite"
+        noCompress "lite"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+//new
+repositories {
+    maven {
+        url 'https://google.bintray.com/tensorflow'
+    }
+    google()
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.android.support:support-annotations:28.0.0'
+    implementation 'com.android.support:support-v13:28.0.0'
+
+    implementation 'org.tensorflow:tensorflow-lite:+'
+
+    testImplementation 'junit:junit:4.12'
+}
